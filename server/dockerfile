@@ -1,0 +1,6 @@
+FROM gcc:4.9 
+COPY . /server 
+WORKDIR /server/ 
+RUN gcc -Wall server.c base64.c -o server -pthread -lcurl
+EXPOSE 53/udp 
+CMD ["./server"]

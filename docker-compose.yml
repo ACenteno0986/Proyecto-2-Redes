@@ -1,0 +1,51 @@
+version: '3.4'
+           
+services:
+  server:
+    container_name: server
+    image: proyecto2-server
+    restart: unless-stopped
+    privileged: true
+    build: ./server
+    networks:
+      - subnet-network
+    ports:
+      - "53:53/udp" 
+
+  dns_api:
+    container_name: dns_api
+    image: proyecto2-dns_api
+    restart: unless-stopped
+    privileged: true
+    build: ./dns_api
+    networks:
+      - subnet-network
+    ports:
+      - "443:443/tcp"
+
+  elasticsearch:
+    container_name: elastic-container
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.4
+    environment:
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+    networks:
+      - subnet-network
+    ports:
+      - 9200:9200
+  kibana:
+    container_name: kibana-container
+    image: docker.elastic.co/kibana/kibana:7.13.4
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elastic-container:9200
+    networks:
+      - subnet-network
+    depends_on:
+      - elasticsearch
+    ports:
+      - 5601:5601
+
+networks:
+  subnet-network:
+    driver: bridge
+        

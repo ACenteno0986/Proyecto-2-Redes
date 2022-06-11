@@ -1,0 +1,7 @@
+FROM python:3 
+COPY . /dns_api 
+WORKDIR /dns_api/
+RUN pip3 install Flask
+EXPOSE 443/tcp 
+ENTRYPOINT ["python3"]
+CMD ["dns_api.py"]
